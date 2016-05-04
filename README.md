@@ -18,5 +18,6 @@ e.g.
 ```bash
 setup-adb atomicappbug-45 openshift
 cd ~/atomic/atomicappbug-45/
-vagrant ssh
+sed -i '/config.vm.network/a config.vm.synced_folder "/home/hummer/git/atomic", "/home/vagrant/git", type: "sshfs"' Vagrantfile 
+vagrant up && vagrant ssh
 ```
