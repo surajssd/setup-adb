@@ -7,5 +7,5 @@ cd ~/atomic/$1
 declare -A urls=( ["docker"]="https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-docker-base-setup/Vagrantfile" ["kubernetes"]="https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-k8s-singlenode-setup/Vagrantfile" ["openshift"]="https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile")
 
 curl -O ${urls[$2]}
+sed -i '/config.vm.network/a config.vm.synced_folder "/home/hummer/git/atomic", "/home/vagrant/git", type: "sshfs"' Vagrantfile 
 curl -O https://raw.githubusercontent.com/surajssd/adb-post-installer/master/installer.sh
-vagrant up
