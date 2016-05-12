@@ -49,6 +49,7 @@ func main() {
     links["docker"] = "https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-docker-base-setup/Vagrantfile"
     links["kubernetes"] = "https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-k8s-singlenode-setup/Vagrantfile"
     links["openshift"] = "https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile"
+    links["mesos"] = "https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-mesos-marathon-singlenode-setup/Vagrantfile"
     links["installer"] = "https://raw.githubusercontent.com/surajssd/adb-post-installer/master/installer.sh"
 
     vagrantfile := filepath.Join(path, "Vagrantfile")

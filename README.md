@@ -1,12 +1,23 @@
 ## Install
 
+Setting up `go` environment, if you already have one skip these steps
 ```bash
-# get the shell file
-curl -O https://raw.githubusercontent.com/surajssd/setup-adb/master/setup-adb
-chmod a+x setup-adb
-# put it in path
-mkdir -p ~/.local/bin
-mv setup-adb ~/.local/bin
+# install go
+sudo dnf -y install go
+
+# if you already have one skip this step
+mkdir $HOME/go
+
+export GOPATH=$HOME/go
+echo 'export GOPATH=$HOME/go' >> ~/.bash_profile
+
+export PATH=$PATH:$GOPATH/bin
+echo 'export PATH=$PATH:$GOPATH/bin' >> ~/.bash_profile
+```
+
+Install
+```bash
+go get github.com/surajssd/setup-adb
 ```
 
 ## Usage
