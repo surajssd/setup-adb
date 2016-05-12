@@ -5,9 +5,10 @@ Setting up `go` environment, if you already have one skip these steps
 # install go
 sudo dnf -y install go
 
-# if you already have one skip this step
+# create go workspace
 mkdir $HOME/go
 
+# export environment variables
 export GOPATH=$HOME/go
 echo 'export GOPATH=$HOME/go' >> ~/.bash_profile
 
