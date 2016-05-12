@@ -1,27 +1,17 @@
 package main
 
-import "fmt"
-import "os"
-import "os/user"
-import "path/filepath"
-import "strings"
-import "io"
-import "net/http"
-
-func expanduser(path string) string {
-
-    if strings.HasPrefix(path, "~") == false {
-        return path
-    }
-
-    usr, _ := user.Current()
-    path = filepath.Join(usr.HomeDir, path[1:])
-    return path
-}
+import (
+    "fmt"
+    "os"
+    "strings"
+    "path/filepath"
+    "io/ioutil"
+    "github.com/surajssd/utils"
+)
 
 func mkdir(folder string) string {
 
-    path := expanduser("~/atomic/" + folder)
+    path := utils.ExpandUser("~/atomic/" + folder)
     output := os.MkdirAll(path, os.ModePerm)
     if output == nil {
         fmt.Println("Folder created")
@@ -32,29 +22,22 @@ func mkdir(folder string) string {
     }
 }
 
-func download_file(filepath string, url string) (err error) {
+func add_sshfs(vagrantfile string) {
+    data, _ := ioutil.ReadFile(vagrantfile)
 
-  // Create the file
-  out, err := os.Create(filepath)
-  if err != nil  {
-    return err
-  }
-  defer out.Close()
+    lines := strings.Split(string(data), "\n")
 
-  // Get the data, 
-  resp, err := http.Get(url)
-  if err != nil {
-    return err
-  }
-  defer resp.Body.Close()
+    index := 0
+    for i, line := range lines {
+        if strings.Contains(line, "config.vm.network") {
+            index = i
+            break
+        }
+    }
+    new_lines := append(append(lines[:index + 1], "  config.vm.synced_folder \"/home/hummer/git/atomic\", \"/home/vagrant/git\", type: \"sshfs\"\n"), lines[index+2:]...)
 
-  // Writer the body to file
-  _, err = io.Copy(out, resp.Body)
-  if err != nil  {
-    return err
-  }
-
-  return nil
+    output := strings.Join(new_lines, "\n")
+    ioutil.WriteFile(vagrantfile, []byte(output), 0644)
 }
 
 func main() {
@@ -62,13 +45,15 @@ func main() {
 
     path := mkdir(args[0])
 
-
     links := make(map[string]string)
     links["docker"] = "https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-docker-base-setup/Vagrantfile"
     links["kubernetes"] = "https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-k8s-singlenode-setup/Vagrantfile"
     links["openshift"] = "https://raw.githubusercontent.com/projectatomic/adb-atomic-developer-bundle/master/components/centos/centos-openshift-setup/Vagrantfile"
     links["installer"] = "https://raw.githubusercontent.com/surajssd/adb-post-installer/master/installer.sh"
 
-    download_file(filepath.Join(path, "Vagrantfile"), links[args[1]])
-    download_file(filepath.Join(path, "installer.sh"), links["installer"])
+    vagrantfile := filepath.Join(path, "Vagrantfile")
+    utils.DownloadFile(vagrantfile, links[args[1]])
+    utils.DownloadFile(filepath.Join(path, "installer.sh"), links["installer"])
+
+    add_sshfs(vagrantfile)
 }
